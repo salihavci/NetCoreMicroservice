@@ -49,7 +49,7 @@ namespace FreeCourse.Services.Catalog
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(opts =>
             {
                 opts.Authority = Configuration["IdentityServerUrl"];
-                opts.Audience = "resource_catalog";
+                opts.Audience = "catalog_resource";
                 opts.RequireHttpsMetadata = false;
             });
         }
