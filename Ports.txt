@@ -7,4 +7,4 @@ Services
 	-PaymentAPI => http://localhost:5016
 
 IdentityServer => http://localhost:5000
-
+Ocelot Gateway => http://localhost:5001
