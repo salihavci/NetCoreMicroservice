@@ -4,6 +4,7 @@ Services
 	-BasketAPI => http://localhost:5013
 	-DiscountAPI => http://localhost:5014
 	-OrderAPI => http://localhost:5015
+	-PaymentAPI => http://localhost:5016
 
 IdentityServer => http://localhost:5000
 
