@@ -1,0 +1,33 @@
+﻿@{
+    ViewData["Title"] = "Index";
+}
+@model UserDto
+
+<div class="row">
+    <div class="col-md-8 offset-md-2">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">
+                    Kullanıcı bilgileri
+                </h5>
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <tr>
+                            <td>Kullanıcı Adı : </td>
+                            <td>@Model.UserName</td>
+                        </tr>
+                        <tr>
+                            <td>Email : </td>
+                            <td>@Model.Email</td>
+                        </tr>
+                        <tr>
+                            <td>Şehir : </td>
+                            <td>@Model.City</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
