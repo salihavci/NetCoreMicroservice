@@ -1,6 +1,7 @@
 ﻿using FreeCourse.Web.Abstractions;
 using FreeCourse.Web.Inputs;
 using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Threading.Tasks;
 
 namespace FreeCourse.Web.Controllers
@@ -34,7 +35,8 @@ namespace FreeCourse.Web.Controllers
                 ViewBag.basket = basket;
                 return View(data);
             }
-            var orderStatus = await _orderService.CreateOrder(data).ConfigureAwait(false);
+            //var orderStatus = await _orderService.CreateOrder(data).ConfigureAwait(false); //1. Yol Senkron iletişim için
+            var orderStatus = await _orderService.SuspendOrder(data).ConfigureAwait(false);//2. Yol Asenkron iletişim için
             if (!orderStatus.IsSuccessful)
             {
                 var basket = await _basketService.GetBasketAsync().ConfigureAwait(false);
@@ -43,7 +45,8 @@ namespace FreeCourse.Web.Controllers
                 return View();
             }
 
-            return RedirectToAction(nameof(OrderController.SuccessfulCheckout),"Order",new { orderId = orderStatus.OrderId });
+            //return RedirectToAction(nameof(OrderController.SuccessfulCheckout),"Order",new { orderId = orderStatus.OrderId }); //1. Yol Senkron iletişim için
+            return RedirectToAction(nameof(OrderController.SuccessfulCheckout),"Order", new { orderId = new Random().Next(1,1000) }); // 2. Yol Asenkron iletişim için
         }
 
         public IActionResult SuccessfulCheckout(int orderId)
@@ -52,6 +55,11 @@ namespace FreeCourse.Web.Controllers
             return View();
         }
 
+        public async Task<IActionResult> CheckoutHistory()
+        {
+            var orders = await _orderService.GetOrder().ConfigureAwait(false);
+            return View(orders);
+        }
 
     }
 }
