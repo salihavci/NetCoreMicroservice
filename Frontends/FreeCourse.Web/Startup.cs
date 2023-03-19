@@ -1,7 +1,10 @@
+using FreeCourse.Shared.Services;
 using FreeCourse.Web.Abstractions;
 using FreeCourse.Web.Handlers;
+using FreeCourse.Web.Helpers;
 using FreeCourse.Web.Services;
 using FreeCourse.Web.Settings;
+using IdentityModel.AspNetCore.AccessTokenManagement;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -28,14 +31,31 @@ namespace FreeCourse.Web
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddHttpContextAccessor();
+            services.AddScoped<ISharedIdentityService, SharedIdentityService>();
             services.AddHttpClient<IIdentityService,IdentityService>();
+            services.AddHttpClient<IClientCredentialTokenService,ClientCredentialTokenService>();
             services.AddScoped<ResourceOwnerPasswordTokenHandler>();
+            services.AddScoped<ClientCredentialTokenHandler>();
+            services.AddAccessTokenManagement();
+            services.AddSingleton<PhotoHelper>();
+
             var serviceApiSettings = Configuration.GetSection("ServiceApiSettings").Get<ServiceApiSettings>();
+            
             services.AddHttpClient<IUserService,UserService>(opts =>
             {
                 opts.BaseAddress = new Uri(serviceApiSettings.IdentityBaseUri);
             }).AddHttpMessageHandler<ResourceOwnerPasswordTokenHandler>();
-            //services.AddScoped<IIdentityService, IdentityService>();
+            
+            services.AddHttpClient<ICatalogService, CatalogService>(opts =>
+            {
+                opts.BaseAddress = new Uri($"{serviceApiSettings.GatewayBaseUri}/{serviceApiSettings.Catalog.Path}");
+            }).AddHttpMessageHandler<ClientCredentialTokenHandler>();
+            
+            services.AddHttpClient<IPhotoStockService, PhotoStockService>(opts =>
+            {
+                opts.BaseAddress = new Uri($"{serviceApiSettings.GatewayBaseUri}/{serviceApiSettings.PhotoStock.Path}");
+            }).AddHttpMessageHandler<ClientCredentialTokenHandler>();
+
             services.Configure<ServiceApiSettings>(Configuration.GetSection("ServiceApiSettings"));
             services.Configure<ClientSettings>(Configuration.GetSection("ClientSettings"));
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme).AddCookie(CookieAuthenticationDefaults.AuthenticationScheme,opts =>
@@ -61,12 +81,9 @@ namespace FreeCourse.Web
                 app.UseExceptionHandler("/Home/Error");
             }
             app.UseStaticFiles();
-
             app.UseRouting();
-
             app.UseAuthentication();
             app.UseAuthorization();
-
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllerRoute(
