@@ -1,6 +1,7 @@
 ﻿using FreeCourse.Web.Abstractions;
 using FreeCourse.Web.Exceptions;
 using FreeCourse.Web.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;

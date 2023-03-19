@@ -20,9 +20,14 @@
                 <img src="@item.StockPictureUrl" class="card-img-top" alt="...">
                 <div class="card-body">
                     <h5 class="card-title">@item.Name</h5>
+                    <div class="badge bg-primary">
+                        Kategori : <strong>@item.Category.Name</strong>
+                    </div>
                     <p class="card-text">@item.ShortDescription</p>
                     <h4 class="text-primary">@item.Price TL</h4>
-                    <a asp-route-id="@item.Id" asp-controller="Home" asp-action="Details" class="btn btn-primary">Detay</a>
+                    <div class="d-grid gap-2">
+                        <a asp-route-id="@item.Id" asp-controller="Home" asp-action="Details" class="btn btn-primary">Detay</a>
+                    </div>
                 </div>
             </div>
         </div>
@@ -30,7 +35,6 @@
         if (count % 3 == 0)
         {
             @Html.Raw("</div>")
-            ;
         }
     }
 }
