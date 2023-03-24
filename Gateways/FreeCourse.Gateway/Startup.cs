@@ -1,3 +1,4 @@
+using FreeCourse.Gateway.Handlers;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -26,13 +27,14 @@ namespace FreeCourse.Gateway
 
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddHttpClient<TokenExchangeDelegateHandler>();
             services.AddAuthentication().AddJwtBearer("GatewayAuthenticationSchema", opts =>
             {
                 opts.Authority = Configuration["IdentityServerUrl"];
                 opts.Audience = "gateway_resource";
                 opts.RequireHttpsMetadata = false;
             });
-            services.AddOcelot();
+            services.AddOcelot().AddDelegatingHandler<TokenExchangeDelegateHandler>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
