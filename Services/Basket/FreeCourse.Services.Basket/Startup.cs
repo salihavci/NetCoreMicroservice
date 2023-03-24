@@ -1,6 +1,8 @@
+using FreeCourse.Services.Basket.Consumers;
 using FreeCourse.Services.Basket.Services;
 using FreeCourse.Services.Basket.Settings;
 using FreeCourse.Shared.Services;
+using MassTransit;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
@@ -33,6 +35,25 @@ namespace FreeCourse.Services.Basket
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddMassTransit(x =>
+            {
+                x.AddConsumer<CourseNameChangedEventConsumer>();
+                //Default port : 5672
+                x.UsingRabbitMq((context, cfg) =>
+                {
+                    cfg.Host(new Uri(Configuration["RabbitMQSettings:Url"]), "/", host =>
+                    {
+                        host.Username(Configuration["RabbitMQSettings:Username"]);
+                        host.Password(Configuration["RabbitMQSettings:Password"]);
+                    });
+
+                    cfg.ReceiveEndpoint("change-course-name-service", e =>
+                    {
+                        e.ConfigureConsumer<CourseNameChangedEventConsumer>(context);
+                    });
+                });
+            });
+            services.AddMassTransitHostedService();
             var requireAuthorizePolicy = new AuthorizationPolicyBuilder().RequireAuthenticatedUser().Build();
             JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Remove("sub");
             services.AddHttpContextAccessor();
