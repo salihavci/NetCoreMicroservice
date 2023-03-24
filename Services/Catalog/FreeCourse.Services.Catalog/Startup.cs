@@ -1,5 +1,6 @@
 using FreeCourse.Services.Catalog.Services;
 using FreeCourse.Services.Catalog.Settings;
+using MassTransit;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -30,6 +31,20 @@ namespace FreeCourse.Services.Catalog
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddMassTransit(x =>
+            {
+                //Default port : 5672
+                x.UsingRabbitMq((context, cfg) =>
+                {
+                    cfg.Host(new Uri(Configuration["RabbitMQSettings:Url"]), "/", host =>
+                    {
+                        host.Username(Configuration["RabbitMQSettings:Username"]);
+                        host.Password(Configuration["RabbitMQSettings:Password"]);
+                    });
+                });
+            });
+            services.AddMassTransitHostedService();
+
             services.AddScoped<ICategoryService, CategoryService>();
             services.AddScoped<ICourseService, CourseService>();
             services.AddAutoMapper(typeof(Startup));

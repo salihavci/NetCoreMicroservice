@@ -19,7 +19,7 @@ namespace FreeCourse.Web.Abstractions
         /// </summary>
         /// <param name="data"></param>
         /// <returns></returns>
-        Task SuspendOrder(CheckoutInfoInput data);
+        Task<OrderSuspendedDto> SuspendOrder(CheckoutInfoInput data);
         Task<List<OrderDto>> GetOrder();
 
     }

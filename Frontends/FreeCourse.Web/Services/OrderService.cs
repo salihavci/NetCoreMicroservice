@@ -97,9 +97,61 @@ namespace FreeCourse.Web.Services
             return response.Data;
         }
 
-        public Task SuspendOrder(CheckoutInfoInput data)
+        public async Task<OrderSuspendedDto> SuspendOrder(CheckoutInfoInput data)
         {
-            throw new System.NotImplementedException();
+            var basket = await _basketService.GetBasketAsync().ConfigureAwait(false);
+            
+            var orderRequest = new CreateOrderInput()
+            {
+                BuyerId = _sharedIdentityService.GetUserId,
+                Address = new AddressDto()
+                {
+                    Province = data.Province,
+                    District = data.District,
+                    Line = data.Line,
+                    Street = data.Street,
+                    ZipCode = data.ZipCode
+                }
+            };
+            basket.BasketItems.ForEach(b =>
+            {
+                var coursePicture = _catalogService.GetCourseById(b.CourseId).Result;
+                var item = new OrderItemDto()
+                {
+                    ProductId = b.CourseId,
+                    Price = b.GetCurrentPrice,
+                    PictureUrl = coursePicture.StockPictureUrl,
+                    ProductName = b.CourseName
+                };
+
+                orderRequest.OrderItems.Add(item);
+            });
+
+            var payment = new PaymentInfoInput()
+            {
+                CardName = data.CardName,
+                CardNumber = data.CardNumber,
+                Expiration = data.Expiration,
+                CVV = data.CVV,
+                TotalPrice = basket.TotalPrice,
+                Order = orderRequest
+            };
+
+            var responsePayment = await _paymentService.ReceivePayment(payment).ConfigureAwait(false);
+            if(!responsePayment)
+            {
+                return new OrderSuspendedDto()
+                {
+                    Error = "Ödeme alınamadı.",
+                    IsSuccessful = false
+                };
+            }
+
+            var deleteBasketResponse = await _basketService.DeleteBasketAsync().ConfigureAwait(false);
+            return new OrderSuspendedDto()
+            {
+                IsSuccessful = true
+            };
         }
     }
 }
