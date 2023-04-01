@@ -22,8 +22,9 @@ namespace FreeCourse.Web.Controllers
         }
 
         [HttpGet]
-        public IActionResult Signin()
+        public IActionResult Signin(string ReturnUrl = "/")
         {
+            TempData["returnUrl"] = ReturnUrl;
             return View();
         }
 
@@ -50,6 +51,11 @@ namespace FreeCourse.Web.Controllers
                     ModelState.AddModelError(string.Empty, x);
                 });
                 return View();
+            }
+            if (!string.IsNullOrWhiteSpace(TempData["returnUrl"].ToString()))
+            {
+                var returnUrl = TempData["returnUrl"].ToString();
+                return Redirect(returnUrl);
             }
 
             return RedirectToAction(nameof(Index), "Home");

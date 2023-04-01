@@ -42,7 +42,7 @@ namespace FreeCourse.Web
             services.AddHttpClientServices(Configuration);
             services.Configure<ServiceApiSettings>(Configuration.GetSection("ServiceApiSettings"));
             services.Configure<ClientSettings>(Configuration.GetSection("ClientSettings"));
-            services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme).AddCookie(CookieAuthenticationDefaults.AuthenticationScheme,opts =>
+            services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme).AddCookie(CookieAuthenticationDefaults.AuthenticationScheme, opts =>
             {
                 opts.LoginPath = "/Auth/Signin";
                 opts.LogoutPath = "/Auth/Signout";
@@ -50,20 +50,20 @@ namespace FreeCourse.Web
                 opts.SlidingExpiration = true;
                 opts.Cookie.Name = "MicroserviceAuthCookie";
             });
-            services.AddControllersWithViews().AddRazorRuntimeCompilation().AddFluentValidation(fv=> fv.RegisterValidatorsFromAssemblyContaining<CourseCreateValidator>());
+            services.AddControllersWithViews().AddRazorRuntimeCompilation().AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<CourseCreateValidator>());
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            if (env.IsDevelopment())
-            {
-                app.UseDeveloperExceptionPage();
-            }
-            else
-            {
-                app.UseExceptionHandler("/Home/Error");
-            }
+            //if (env.IsDevelopment())
+            //{
+            //    app.UseDeveloperExceptionPage();
+            //}
+            //else
+            //{
+            //}
+            app.UseExceptionHandler("/Home/Error");
             app.UseStaticFiles();
             app.UseRouting();
             app.UseAuthentication();
