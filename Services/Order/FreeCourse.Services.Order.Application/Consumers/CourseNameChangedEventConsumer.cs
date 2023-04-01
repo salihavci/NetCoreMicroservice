@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace FreeCourse.Services.Order.Application.Consumers
@@ -26,6 +27,7 @@ namespace FreeCourse.Services.Order.Application.Consumers
             {
                 x.UpdateOrderItem(context.Message.UpdatedName, x.PictureUrl, x.Price);
             });
+            _orderDbContext.OrderItems.UpdateRange(orderItems);
             await _orderDbContext.SaveChangesAsync().ConfigureAwait(false);
         }
     }
