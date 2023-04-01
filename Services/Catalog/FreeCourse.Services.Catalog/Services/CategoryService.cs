@@ -35,7 +35,7 @@ namespace FreeCourse.Services.Catalog.Services
         {
             var category = this._mapper.Map<Category>(input);
             await _categoryCollection.InsertOneAsync(category);
-            return Response<CategoryDto>.Success(this._mapper.Map<CategoryDto>(category), (int)HttpStatusCode .OK);
+            return Response<CategoryDto>.Success(this._mapper.Map<CategoryDto>(category), (int)HttpStatusCode.OK);
         }
 
         public async Task<Response<CategoryDto>> GetByIdAsync(string id)

@@ -47,7 +47,7 @@ namespace FreeCourse.Services.Basket
                         host.Password(Configuration["RabbitMQSettings:Password"]);
                     });
 
-                    cfg.ReceiveEndpoint("change-course-name-service", e =>
+                    cfg.ReceiveEndpoint("change-course-name-service-basket", e =>
                     {
                         e.ConfigureConsumer<CourseNameChangedEventConsumer>(context);
                     });

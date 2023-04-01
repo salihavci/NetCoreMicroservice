@@ -2,6 +2,7 @@
 using FreeCourse.Services.Basket.Services;
 using FreeCourse.Shared.Messages.Events;
 using MassTransit;
+using System;
 using System.Text.Json;
 using System.Threading.Tasks;
 
@@ -23,10 +24,12 @@ namespace FreeCourse.Services.Basket.Consumers
             {
                 foreach(var key in keys)
                 {
+                    Console.WriteLine("Key : " + key.ToString());
                     var basket = await _redisService.GetDb().StringGetAsync(key);
                     var basketDto = JsonSerializer.Deserialize<BasketVM>(basket);
                     basketDto.BasketItems.ForEach(x =>
                     {
+                        Console.WriteLine(context.Message.CourseId.ToString());
                         x.CourseName = x.CourseId == context.Message.CourseId ? context.Message.UpdatedName : x.CourseName;
                     });
                     await _redisService.GetDb().StringSetAsync(key, JsonSerializer.Serialize(basketDto));
