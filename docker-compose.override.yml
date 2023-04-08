@@ -23,15 +23,6 @@ services:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=nowearbackone123
       - POSTGRES_DB=discountdb
-  identitydb:
-    container_name: identitydb
-    restart: always
-    ports:
-      - "1433:1433"
-    volumes:
-      - identitydb_volume:/var/opt/mssql/data
-    environment:
-      - ACCEPT_EULA=Y
   orderdb:
     container_name: orderdb
     restart: always
@@ -47,3 +38,13 @@ services:
     ports:
       - "5672:5672"
       - "15672:15672"
+  catalog.api:
+    container_name: catalog_api
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - IdentityServerUrl=http://identityserver.api:5001
+    ports:
+      - "5011:80"
+    depends_on:
+      - catalogdb
+  
