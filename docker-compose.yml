@@ -7,7 +7,7 @@ services:
   discount:
     image: postgres
   orderdb:
-    image: mcr.microsoft.com/mssql/server
+    image: mcr.microsoft.com/mssql/server:2019-latest
   rabbitmq:
     image: rabbitmq:3.11.13-management
   catalog.api:
