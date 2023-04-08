@@ -42,7 +42,7 @@ services:
     container_name: catalog_api
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
-      - IdentityServerUrl=http://identityserver.api:5000
+      - IdentityServerUrl=http://identityserver.api
     ports:
       - "5011:80"
     depends_on:
@@ -51,7 +51,7 @@ services:
     container_name: basket_api
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
-      - IdentityServerUrl=http://identityserver.api:5000
+      - IdentityServerUrl=http://identityserver.api
       - RedisSettings:Host=basketdb
     ports:
       - "5013:80"
@@ -61,7 +61,7 @@ services:
     container_name: photostock_api
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
-      - IdentityServerUrl=http://identityserver.api:5000
+      - IdentityServerUrl=http://identityserver.api
     ports:
       - "5012:80"
     volumes:
@@ -72,7 +72,7 @@ services:
     container_name: discount_api
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
-      - IdentityServerUrl=http://identityserver.api:5000
+      - IdentityServerUrl=http://identityserver.api
       - "ConnectionStrings:DefaultConnection=User ID=postgres; Password=nowearbackone123; Server=discountdb; Port=5432; Database=discountdb; Integrated Security=true; Pooling=true;"
     ports:
       - "5014:80"
@@ -82,17 +82,24 @@ services:
     container_name: fake_payment_api
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
-      - IdentityServerUrl=http://identityserver.api:5000
+      - IdentityServerUrl=http://identityserver.api
     ports:
       - "5016:80"
   order.api:
     container_name: order_api
+    restart: on-failture
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
-      - IdentityServerUrl=http://identityserver.api:5000
+      - IdentityServerUrl=http://identityserver.api
       - "ConnectionStrings:DefaultConnection=Server=identitydb,1433;Database=IdentityDb;User=sa; Password=Password12*"
     ports:
       - "5015:80"
     depends_on:
       - orderdb
-  
+  gateway.api:
+    container_name: gateway_api
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+      - IdentityServerUrl=http://identityserver.api
+    ports:
+      - "5001:80"
