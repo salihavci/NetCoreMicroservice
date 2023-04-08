@@ -39,7 +39,7 @@ services:
       - "5672:5672"
       - "15672:15672"
   catalog.api:
-    container_name: catalog_api
+    container_name: catalog.api
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - IdentityServerUrl=http://identityserver.api
@@ -48,7 +48,7 @@ services:
     depends_on:
       - catalogdb
   basket.api:
-    container_name: basket_api
+    container_name: basket.api
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - IdentityServerUrl=http://identityserver.api
@@ -58,7 +58,7 @@ services:
     depends_on:
       - basketdb
   photostock.api:
-    container_name: photostock_api
+    container_name: photostock.api
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - IdentityServerUrl=http://identityserver.api
@@ -69,7 +69,7 @@ services:
         source: C:\Users\casus\Desktop\photos
         target: ./app/wwwroot/photos
   discount.api:
-    container_name: discount_api
+    container_name: discount.api
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - IdentityServerUrl=http://identityserver.api
@@ -79,14 +79,14 @@ services:
     depends_on:
       - discountdb
   fake_payment.api:
-    container_name: fake_payment_api
+    container_name: fake_payment.api
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - IdentityServerUrl=http://identityserver.api
     ports:
       - "5016:80"
   order.api:
-    container_name: order_api
+    container_name: order.api
     restart: on-failture
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
@@ -97,9 +97,26 @@ services:
     depends_on:
       - orderdb
   gateway.api:
-    container_name: gateway_api
+    container_name: gateway.api
     environment:
       - ASPNETCORE_ENVIRONMENT=Production
       - IdentityServerUrl=http://identityserver.api
     ports:
       - "5001:80"
+  frontend.web:
+    container_name: frontend.web
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ServiceApiSettings:IdentityBaseUri=http://identityserver.api
+      - ServiceApiSettings:GatewayBaseUri=http://gateway.api
+    ports:
+      - "5010:80"
+    depends_on:
+      - gateway.api
+      - identity.api
+      - catalog.api
+      - basket.api
+      - discount.api
+      - order.api
+      - fake_payment.api
+      - photostock.api

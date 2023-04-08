@@ -45,6 +45,11 @@ services:
     build:
       context: .
       dockerfile: Gateways/FreeCourse.Gateway/Dockerfile
+  frontend.web:
+    image: frontend_image
+    build:
+      context: .
+      dockerfile: Frontends/FreeCourse.Web/Dockerfile
 volumes:
   catalogdb_volume:
   discount_volume:
