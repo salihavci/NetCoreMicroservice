@@ -91,7 +91,7 @@ services:
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - IdentityServerUrl=http://identityserver.api
-      - "ConnectionStrings:DefaultConnection=Server=identitydb,1433;Database=IdentityDb;User=sa; Password=Password12*"
+      - "ConnectionStrings:DefaultConnection=Server=orderdb,1433;Database=OrderDb;User=sa; Password=Password12*"
     ports:
       - "5015:80"
     depends_on:
